@@ -1,0 +1,21 @@
+{
+    "name": "digilist/dependency-graph",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Markus Fasselt",
+            "email": "markus.fasselt@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.5.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Digilist\\DependencyGraph\\": "src/"
+        }
+    }
+}
