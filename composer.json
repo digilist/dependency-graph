@@ -1,5 +1,6 @@
 {
     "name": "digilist/dependency-graph",
+    "description": "Dependency Graph Resolver in PHP",
     "license": "MIT",
     "authors": [
         {
