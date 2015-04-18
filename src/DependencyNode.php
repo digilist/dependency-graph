@@ -43,7 +43,9 @@ class DependencyNode
      */
     public function dependsOn(self $node)
     {
-        $this->dependencies[] = $node;
+        if (!in_array($node, $this->dependencies)) {
+            $this->dependencies[] = $node;
+        }
     }
 
     /**
