@@ -24,13 +24,15 @@ class DependencyNode
     private $dependencies = array();
 
     /**
-     * Create a new node for the dependency graph. The passed element can be an object or primitive, it doesn't matter.
+     * Create a new node for the dependency graph. The passed element can be an object or primitive,
+     * it doesn't matter, as the resolving is based on nodes.
+     *
      * Optionally you can pass a specific name, which will help you if circular dependencies are detected.
      *
      * @param string $name
      * @param mixed $element
      */
-    public function __construct($element, $name = null)
+    public function __construct($element = null, $name = null)
     {
         $this->element = $element;
         $this->name = $name;
@@ -49,11 +51,31 @@ class DependencyNode
     }
 
     /**
-     * @return mixed
+     * @return DependencyNode[]
+     */
+    public function getDependencies()
+    {
+        return $this->dependencies;
+    }
+
+    /**
+     * @return string
      */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -65,10 +87,14 @@ class DependencyNode
     }
 
     /**
-     * @return DependencyNode[]
+     * @param mixed$element
+     *
+     * @return $this
      */
-    public function getDependencies()
+    public function setElement($element)
     {
-        return $this->dependencies;
+        $this->element = $element;
+
+        return $this;
     }
 }

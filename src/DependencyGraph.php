@@ -113,7 +113,11 @@ class DependencyGraph
             $this->innerResolve($rootNode, $resolved, new ArrayObject());
         }
 
-        return $resolved->getArrayCopy();
+        $resolvedElements = array_map(function (DependencyNode $node) {
+            return $node->getElement();
+        }, $resolved->getArrayCopy());
+
+        return $resolvedElements;
     }
 
     /**

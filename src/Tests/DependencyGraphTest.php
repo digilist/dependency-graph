@@ -23,7 +23,7 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addNode($nodeD = new DependencyNode('D'));
 
         $resolved = $graph->resolve();
-        $this->assertSequence(array('A', 'B', 'C', 'D'), $resolved);
+        $this->assertEquals(array('A', 'B', 'C', 'D'), $resolved);
         $this->assertEquals(array($nodeA, $nodeB, $nodeC, $nodeD), $graph->getNodes());
     }
 
@@ -128,7 +128,7 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addDependency($nodeC, $nodeE);
 
         $resolved = $graph->resolve();
-        $this->assertSequence(array('D', 'E', 'C', 'B', 'A'), $resolved);
+        $this->assertEquals(array('D', 'E', 'C', 'B', 'A'), $resolved);
     }
 
     /**
@@ -157,7 +157,7 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addDependency($nodeF, $nodeG);
 
         $resolved = $graph->resolve();
-        $this->assertSequence(array('D', 'E', 'C', 'B', 'A', 'G', 'F'), $resolved);
+        $this->assertEquals(array('D', 'E', 'C', 'B', 'A', 'G', 'F'), $resolved);
     }
 
     /**
@@ -185,19 +185,5 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addDependency($nodeD, $nodeB);
 
         $graph->resolve();
-    }
-
-    /**
-     * Assert that the resulting sequence is correct.
-     *
-     * @param array $sequence
-     * @param DependencyNode[] $resolved
-     */
-    private function assertSequence(array $sequence, array $resolved)
-    {
-        $this->assertEquals(count($sequence), count($resolved));
-        foreach ($sequence as $key => $expected) {
-            $this->assertEquals($expected, $resolved[$key]->getElement());
-        }
     }
 }
