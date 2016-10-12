@@ -113,6 +113,11 @@ class DependencyGraph
             $this->innerResolve($rootNode, $resolved, new ArrayObject());
         }
 
+        //all resolved?
+        if ($resolved->count() !== count($this->nodes)) {
+            throw new CircularDependencyException();
+        }
+
         $resolvedElements = array_map(function (DependencyNode $node) {
             return $node->getElement();
         }, $resolved->getArrayCopy());

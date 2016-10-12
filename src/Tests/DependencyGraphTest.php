@@ -186,4 +186,48 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
 
         $graph->resolve();
     }
+
+	/**
+	 * Tests whether a circular dependency is detected for a->b b->a.
+	 *
+	 * @expectedException Digilist\DependencyGraph\CircularDependencyException
+	 * @test
+	 */
+    public function testCircularDependencyException2()
+    {
+        $graph = new DependencyGraph();
+
+        $nodeA = new DependencyNode('A');
+        $nodeB = new DependencyNode('B');
+
+        $graph->addDependency($nodeA, $nodeB);
+        $graph->addDependency($nodeB, $nodeA);
+        $graph->resolve();
+
+    }
+
+    /**
+     * Tests whether a circular dependency is detected for a->b b->a c->d.
+     *
+     * @expectedException Digilist\DependencyGraph\CircularDependencyException
+     * @test
+     */
+    public function testCircularDependencyException3()
+    {
+        $graph = new DependencyGraph();
+
+        $nodeA = new DependencyNode('A');
+        $nodeB = new DependencyNode('B');
+        $nodeC = new DependencyNode('C');
+        $nodeD = new DependencyNode('D');
+
+        $graph->addDependency($nodeA, $nodeB);
+        $graph->addDependency($nodeB, $nodeA);
+        $graph->addDependency($nodeC, $nodeD);
+
+        $graph->resolve();
+
+    }
+
+
 }
