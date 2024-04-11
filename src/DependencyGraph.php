@@ -100,7 +100,7 @@ class DependencyGraph
     /**
      * Resolve this dependency graph. In the end a valid path will be returned.
      *
-     * @return DependencyNode[]
+     * @return string[]
      */
     public function resolve()
     {
