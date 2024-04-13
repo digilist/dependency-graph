@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Digilist\DependencyGraph;
 
@@ -7,6 +7,7 @@ use SplObjectStorage;
 
 /**
  * @template T
+ *
  * @phpstan-type Node DependencyNode<T>
  * @phpstan-type DependencyObject ArrayObject<array-key, Node>
  * @phpstan-type DependencyObjectStorage SplObjectStorage<Node, DependencyObject>
@@ -26,17 +27,18 @@ class DependencyGraph
 
     public function __construct()
     {
-        $this->dependencies = new SplObjectStorage();
+        $this->dependencies = new \SplObjectStorage();
     }
 
     /**
      * Add a new node to the graph and adopt the defined dependencies automatically.
+     *
      * @param Node $node
      */
     public function addNode(DependencyNode $node): void
     {
         if (!$this->dependencies->contains($node)) {
-            $this->dependencies->attach($node, new ArrayObject());
+            $this->dependencies->attach($node, new \ArrayObject());
             $this->nodes[] = $node;
 
             foreach ($node->getDependencies() as $depency) {
@@ -48,6 +50,7 @@ class DependencyGraph
     /**
      * Add a new dependency between two nodes.
      * If the starting node or the dependend is not added to the graph yet, they will be added automatically.
+     *
      * @param Node $node
      * @param Node $dependsOn
      */
@@ -69,6 +72,7 @@ class DependencyGraph
 
     /**
      * Find all connected graphs in the set of all graphs.
+     *
      * @return Node[]
      */
     public function findRootNodes(): array
@@ -89,6 +93,7 @@ class DependencyGraph
 
         // Create array which contains all roots
         $rootNodes = [];
+
         foreach ($possibleRoots as $node) {
             if ($possibleRoots[$node]) {
                 $rootNodes[] = $node;
@@ -105,56 +110,27 @@ class DependencyGraph
      */
     public function resolve(): array
     {
-        if ($this->dependencies->count() === 0) {
+        if (0 === $this->dependencies->count()) {
             return [];
         }
 
-        $resolved = new ArrayObject();
+        $resolved = new \ArrayObject();
         foreach ($this->findRootNodes() as $rootNode) {
-            $this->innerResolve($rootNode, $resolved, new ArrayObject());
+            $this->innerResolve($rootNode, $resolved, new \ArrayObject());
         }
 
-        //all resolved?
+        // all resolved?
         if ($resolved->count() !== count($this->nodes)) {
             throw new CircularDependencyException();
         }
 
-        $resolvedElements = array_map(function (DependencyNode $node) {
-            return $node->getElement();
-        }, $resolved->getArrayCopy());
-
-        return $resolvedElements;
-    }
-
-    /**
-     * Inner recursive function.
-     *
-     * @param Node $rootNode
-     * @param DependencyObject $resolved
-     * @param DependencyObject $seen
-     */
-    private function innerResolve(DependencyNode $rootNode, ArrayObject $resolved, ArrayObject $seen): void
-    {
-        $seen->append($rootNode);
-        foreach ($rootNode->getDependencies() as $edge) {
-            if (!$this->arrayObjectContains($edge, $resolved)) {
-                if ($this->arrayObjectContains($edge, $seen)) {
-                    throw new CircularDependencyException(
-                        sprintf('Circular dependency detected: %s depends on %s', $rootNode->getName(), $edge->getName())
-                    );
-                }
-
-                $this->innerResolve($edge, $resolved, $seen);
-            }
-        }
-
-        $resolved->append($rootNode);
+        return array_map(fn(DependencyNode $node) => $node->getElement(), $resolved->getArrayCopy());
     }
 
     /**
      * @return DependencyObjectStorage
      */
-    public function getDependencies(): SplObjectStorage
+    public function getDependencies(): \SplObjectStorage
     {
         return $this->dependencies;
     }
@@ -168,12 +144,37 @@ class DependencyGraph
     }
 
     /**
+     * Inner recursive function.
+     *
+     * @param Node             $rootNode
+     * @param DependencyObject $resolved
+     * @param DependencyObject $seen
+     */
+    private function innerResolve(DependencyNode $rootNode, \ArrayObject $resolved, \ArrayObject $seen): void
+    {
+        $seen->append($rootNode);
+        foreach ($rootNode->getDependencies() as $edge) {
+            if (!$this->arrayObjectContains($edge, $resolved)) {
+                if ($this->arrayObjectContains($edge, $seen)) {
+                    throw new CircularDependencyException(
+                        sprintf('Circular dependency detected: %s depends on %s', $rootNode->getName(), $edge->getName()),
+                    );
+                }
+
+                $this->innerResolve($edge, $resolved, $seen);
+            }
+        }
+
+        $resolved->append($rootNode);
+    }
+
+    /**
      * Does the ArrayObject $haystack contain the passed DependencyNode $needle?
      *
-     * @param Node $needle
+     * @param Node             $needle
      * @param DependencyObject $haystack
      */
-    private function arrayObjectContains(DependencyNode $needle, ArrayObject $haystack): bool
+    private function arrayObjectContains(DependencyNode $needle, \ArrayObject $haystack): bool
     {
         foreach ($haystack as $node) {
             if ($node === $needle) {

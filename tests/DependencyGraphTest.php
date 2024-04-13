@@ -1,15 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Digilist\DependencyGraph\Tests;
 
 use Digilist\DependencyGraph\CircularDependencyException;
 use Digilist\DependencyGraph\DependencyGraph;
 use Digilist\DependencyGraph\DependencyNode;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
+#[CoversClass(DependencyGraph::class)]
 class DependencyGraphTest extends TestCase
 {
-
     /**
      * In case there are no dependencies all nodes should be returned in their added order.
      */
@@ -23,8 +27,8 @@ class DependencyGraphTest extends TestCase
         $graph->addNode($nodeD = new DependencyNode('D'));
 
         $resolved = $graph->resolve();
-        $this->assertEquals(array('A', 'B', 'C', 'D'), $resolved);
-        $this->assertEquals(array($nodeA, $nodeB, $nodeC, $nodeD), $graph->getNodes());
+        $this->assertEquals(['A', 'B', 'C', 'D'], $resolved);
+        $this->assertEquals([$nodeA, $nodeB, $nodeC, $nodeD], $graph->getNodes());
     }
 
     /**
@@ -51,11 +55,11 @@ class DependencyGraphTest extends TestCase
         $graph->addDependency($nodeC, $nodeE);
         $graph->addDependency($nodeF, $nodeG);
 
-        $this->assertEquals(array($nodeB, $nodeD), $nodeA->getDependencies());
-        $this->assertEquals(array($nodeC, $nodeE), $nodeB->getDependencies());
-        $this->assertEquals(array($nodeD, $nodeE), $nodeC->getDependencies());
-        $this->assertEquals(array(), $nodeD->getDependencies());
-        $this->assertEquals(array(), $nodeE->getDependencies());
+        $this->assertEquals([$nodeB, $nodeD], $nodeA->getDependencies());
+        $this->assertEquals([$nodeC, $nodeE], $nodeB->getDependencies());
+        $this->assertEquals([$nodeD, $nodeE], $nodeC->getDependencies());
+        $this->assertEquals([], $nodeD->getDependencies());
+        $this->assertEquals([], $nodeE->getDependencies());
     }
 
     /**
@@ -82,11 +86,11 @@ class DependencyGraphTest extends TestCase
         $graph->addNode($nodeA);
         $dependencies = $graph->getDependencies();
 
-        $this->assertEquals(array($nodeB, $nodeD), $dependencies[$nodeA]->getArrayCopy());
-        $this->assertEquals(array($nodeC, $nodeE), $dependencies[$nodeB]->getArrayCopy());
-        $this->assertEquals(array($nodeD, $nodeE), $dependencies[$nodeC]->getArrayCopy());
-        $this->assertEquals(array(), $dependencies[$nodeD]->getArrayCopy());
-        $this->assertEquals(array(), $dependencies[$nodeE]->getArrayCopy());
+        $this->assertEquals([$nodeB, $nodeD], $dependencies[$nodeA]->getArrayCopy());
+        $this->assertEquals([$nodeC, $nodeE], $dependencies[$nodeB]->getArrayCopy());
+        $this->assertEquals([$nodeD, $nodeE], $dependencies[$nodeC]->getArrayCopy());
+        $this->assertEquals([], $dependencies[$nodeD]->getArrayCopy());
+        $this->assertEquals([], $dependencies[$nodeE]->getArrayCopy());
     }
 
     /**
@@ -96,7 +100,7 @@ class DependencyGraphTest extends TestCase
     {
         $graph = new DependencyGraph();
         $resolved = $graph->resolve();
-        $this->assertEquals(array(), $resolved);
+        $this->assertEquals([], $resolved);
     }
 
     /**
@@ -120,7 +124,7 @@ class DependencyGraphTest extends TestCase
         $graph->addDependency($nodeC, $nodeE);
 
         $resolved = $graph->resolve();
-        $this->assertEquals(array('D', 'E', 'C', 'B', 'A'), $resolved);
+        $this->assertEquals(['D', 'E', 'C', 'B', 'A'], $resolved);
     }
 
     /**
@@ -147,7 +151,7 @@ class DependencyGraphTest extends TestCase
         $graph->addDependency($nodeF, $nodeG);
 
         $resolved = $graph->resolve();
-        $this->assertEquals(array('D', 'E', 'C', 'B', 'A', 'G', 'F'), $resolved);
+        $this->assertEquals(['D', 'E', 'C', 'B', 'A', 'G', 'F'], $resolved);
     }
 
     /**
@@ -176,9 +180,9 @@ class DependencyGraphTest extends TestCase
         $graph->resolve();
     }
 
-	/**
-	 * Tests whether a circular dependency is detected for a->b b->a.
-	 */
+    /**
+     * Tests whether a circular dependency is detected for a->b b->a.
+     */
     public function testCircularDependencyException2(): void
     {
         $graph = new DependencyGraph();

@@ -1,10 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Digilist\DependencyGraph\Tests;
 
 use Digilist\DependencyGraph\DependencyNode;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
+#[CoversClass(DependencyNode::class)]
 class DependencyNodeTest extends TestCase
 {
     public function testBasicNode(): void

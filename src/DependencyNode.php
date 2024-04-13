@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Digilist\DependencyGraph;
 
@@ -19,15 +19,13 @@ class DependencyNode
      *
      * Optionally you can pass a specific name, which will help you if circular dependencies are detected.
      *
-     * @param string $name
      * @param T $element
      */
-    public function __construct(private mixed $element = null, private ?string $name = null)
-    {
-    }
+    public function __construct(private mixed $element = null, private ?string $name = null) {}
 
     /**
      * This node as a dependency on the passed node.
+     *
      * @param DependencyNode<T> $node
      */
     public function dependsOn(self $node): void
@@ -70,6 +68,7 @@ class DependencyNode
 
     /**
      * @param T $element
+     *
      * @return $this
      */
     public function setElement(mixed $element): self
