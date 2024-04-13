@@ -1,6 +1,4 @@
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/digilist/dependency-graph/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/digilist/dependency-graph/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/digilist/dependency-graph/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/digilist/dependency-graph/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/digilist/dependency-graph/badges/build.png?b=master)](https://scrutinizer-ci.com/g/digilist/dependency-graph/build-status/master)
+[![PHP](https://github.com/digilist/dependency-graph/actions/workflows/php.yml/badge.svg)](https://github.com/digilist/dependency-graph/actions/workflows/php.yml)
 
 # PHP DependencyGraph
 This library provides a simple [Dependency Graph](http://en.wikipedia.org/wiki/Dependency_graph) resolver. It supports multiple root nodes which are detected automatically.
