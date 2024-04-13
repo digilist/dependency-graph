@@ -3,25 +3,15 @@
 namespace Digilist\DependencyGraph;
 
 /**
+ * @template T
  * This class describes a node in a dependency graph.
  */
 class DependencyNode
 {
-
     /**
-     * @var mixed
+     * @var array<DependencyNode<T>>
      */
-    private $name;
-
-    /**
-     * @var mixed
-     */
-    private $element;
-
-    /**
-     * @var array
-     */
-    private $dependencies = array();
+    private array $dependencies = [];
 
     /**
      * Create a new node for the dependency graph. The passed element can be an object or primitive,
@@ -30,20 +20,17 @@ class DependencyNode
      * Optionally you can pass a specific name, which will help you if circular dependencies are detected.
      *
      * @param string $name
-     * @param mixed $element
+     * @param T $element
      */
-    public function __construct($element = null, $name = null)
+    public function __construct(private mixed $element = null, private ?string $name = null)
     {
-        $this->element = $element;
-        $this->name = $name;
     }
 
     /**
      * This node as a dependency on the passed node.
-     *
-     * @param DependencyNode $node
+     * @param DependencyNode<T> $node
      */
-    public function dependsOn(self $node)
+    public function dependsOn(self $node): void
     {
         if (!in_array($node, $this->dependencies)) {
             $this->dependencies[] = $node;
@@ -51,27 +38,22 @@ class DependencyNode
     }
 
     /**
-     * @return DependencyNode[]
+     * @return DependencyNode<T>[]
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return $this->dependencies;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
-     *
      * @return $this
      */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -79,19 +61,18 @@ class DependencyNode
     }
 
     /**
-     * @return mixed
+     * @return T
      */
-    public function getElement()
+    public function getElement(): mixed
     {
         return $this->element;
     }
 
     /**
-     * @param mixed$element
-     *
+     * @param T $element
      * @return $this
      */
-    public function setElement($element)
+    public function setElement(mixed $element): self
     {
         $this->element = $element;
 

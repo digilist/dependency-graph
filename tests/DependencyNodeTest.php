@@ -3,14 +3,11 @@
 namespace Digilist\DependencyGraph\Tests;
 
 use Digilist\DependencyGraph\DependencyNode;
+use PHPUnit\Framework\TestCase;
 
-class DependencyNodeTest extends \PHPUnit_Framework_TestCase
+class DependencyNodeTest extends TestCase
 {
-
-    /**
-     * @test
-     */
-    public function testBasicNode()
+    public function testBasicNode(): void
     {
         $node = new DependencyNode('Foobar');
 
