@@ -9,7 +9,7 @@ use SplObjectStorage;
  * @template T
  * @phpstan-type Node DependencyNode<T>
  * @phpstan-type DependencyObject ArrayObject<array-key, Node>
- * @phpstan-type DependencyObjectStorage SplObjectStorage<int|string, DependencyObject>
+ * @phpstan-type DependencyObjectStorage SplObjectStorage<Node, DependencyObject>
  * This class can resolve a dependency graph.
  */
 class DependencyGraph
@@ -73,7 +73,8 @@ class DependencyGraph
      */
     public function findRootNodes(): array
     {
-        $possibleRoots = new SplObjectStorage();
+        /** @var \SplObjectStorage<Node, bool> $possibleRoots */
+        $possibleRoots = new \SplObjectStorage();
         foreach ($this->nodes as $node) {
             $possibleRoots[$node] = true;
         }
