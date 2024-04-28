@@ -1,19 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Digilist\DependencyGraph\Tests;
 
+use Digilist\DependencyGraph\CircularDependencyException;
 use Digilist\DependencyGraph\DependencyGraph;
 use Digilist\DependencyGraph\DependencyNode;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
 
-class DependencyGraphTest extends \PHPUnit_Framework_TestCase
+/**
+ * @internal
+ */
+#[CoversClass(DependencyGraph::class)]
+class DependencyGraphTest extends TestCase
 {
-
     /**
      * In case there are no dependencies all nodes should be returned in their added order.
-     *
-     * @test
      */
-    public function testWithoutDependencies()
+    public function testWithoutDependencies(): void
     {
         $graph = new DependencyGraph();
 
@@ -23,17 +27,15 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addNode($nodeD = new DependencyNode('D'));
 
         $resolved = $graph->resolve();
-        $this->assertEquals(array('A', 'B', 'C', 'D'), $resolved);
-        $this->assertEquals(array($nodeA, $nodeB, $nodeC, $nodeD), $graph->getNodes());
+        $this->assertEquals(['A', 'B', 'C', 'D'], $resolved);
+        $this->assertEquals([$nodeA, $nodeB, $nodeC, $nodeD], $graph->getNodes());
     }
 
     /**
      * Tests whether the declaration of dependencies directly on the graph works correctly
      * and the dependencies are set on the node.
-     *
-     * @test
      */
-    public function testDeclarationOnGraph()
+    public function testDeclarationOnGraph(): void
     {
         $graph = new DependencyGraph();
 
@@ -53,20 +55,18 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addDependency($nodeC, $nodeE);
         $graph->addDependency($nodeF, $nodeG);
 
-        $this->assertEquals(array($nodeB, $nodeD), $nodeA->getDependencies());
-        $this->assertEquals(array($nodeC, $nodeE), $nodeB->getDependencies());
-        $this->assertEquals(array($nodeD, $nodeE), $nodeC->getDependencies());
-        $this->assertEquals(array(), $nodeD->getDependencies());
-        $this->assertEquals(array(), $nodeE->getDependencies());
+        $this->assertEquals([$nodeB, $nodeD], $nodeA->getDependencies());
+        $this->assertEquals([$nodeC, $nodeE], $nodeB->getDependencies());
+        $this->assertEquals([$nodeD, $nodeE], $nodeC->getDependencies());
+        $this->assertEquals([], $nodeD->getDependencies());
+        $this->assertEquals([], $nodeE->getDependencies());
     }
 
     /**
      * Tests whether the declaration of dependencies directly on the nodes works correctly
      * and the dependencies are detected by the graph.
-     *
-     * @test
      */
-    public function testDeclarationOnNodes()
+    public function testDeclarationOnNodes(): void
     {
         $graph = new DependencyGraph();
 
@@ -86,31 +86,27 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addNode($nodeA);
         $dependencies = $graph->getDependencies();
 
-        $this->assertEquals(array($nodeB, $nodeD), $dependencies[$nodeA]->getArrayCopy());
-        $this->assertEquals(array($nodeC, $nodeE), $dependencies[$nodeB]->getArrayCopy());
-        $this->assertEquals(array($nodeD, $nodeE), $dependencies[$nodeC]->getArrayCopy());
-        $this->assertEquals(array(), $dependencies[$nodeD]->getArrayCopy());
-        $this->assertEquals(array(), $dependencies[$nodeE]->getArrayCopy());
+        $this->assertEquals([$nodeB, $nodeD], $dependencies[$nodeA]->getArrayCopy());
+        $this->assertEquals([$nodeC, $nodeE], $dependencies[$nodeB]->getArrayCopy());
+        $this->assertEquals([$nodeD, $nodeE], $dependencies[$nodeC]->getArrayCopy());
+        $this->assertEquals([], $dependencies[$nodeD]->getArrayCopy());
+        $this->assertEquals([], $dependencies[$nodeE]->getArrayCopy());
     }
 
     /**
      * Tests the behaviour if no nodes where added.
-     *
-     * @test
      */
-    public function testResolvingWithoutNodes()
+    public function testResolvingWithoutNodes(): void
     {
         $graph = new DependencyGraph();
         $resolved = $graph->resolve();
-        $this->assertEquals(array(), $resolved);
+        $this->assertEquals([], $resolved);
     }
 
     /**
      * Tests whether the internal declaration of dependencies (on the graph) works correctly.
-     *
-     * @test
      */
-    public function testResolving()
+    public function testResolving(): void
     {
         $graph = new DependencyGraph();
 
@@ -128,15 +124,13 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addDependency($nodeC, $nodeE);
 
         $resolved = $graph->resolve();
-        $this->assertEquals(array('D', 'E', 'C', 'B', 'A'), $resolved);
+        $this->assertEquals(['D', 'E', 'C', 'B', 'A'], $resolved);
     }
 
     /**
      * Test whether dependencies are solved correctly if there are multiple roots.
-     *
-     * @test
      */
-    public function testWithMultipleRoots()
+    public function testWithMultipleRoots(): void
     {
         $graph = new DependencyGraph();
 
@@ -157,16 +151,13 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addDependency($nodeF, $nodeG);
 
         $resolved = $graph->resolve();
-        $this->assertEquals(array('D', 'E', 'C', 'B', 'A', 'G', 'F'), $resolved);
+        $this->assertEquals(['D', 'E', 'C', 'B', 'A', 'G', 'F'], $resolved);
     }
 
     /**
      * Tests whether a circular dependency is detected.
-     *
-     * @expectedException Digilist\DependencyGraph\CircularDependencyException
-     * @test
      */
-    public function testCircularDependencyException()
+    public function testCircularDependencyException(): void
     {
         $graph = new DependencyGraph();
 
@@ -184,16 +175,15 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addDependency($nodeC, $nodeE);
         $graph->addDependency($nodeD, $nodeB);
 
+        static::expectException(CircularDependencyException::class);
+
         $graph->resolve();
     }
 
-	/**
-	 * Tests whether a circular dependency is detected for a->b b->a.
-	 *
-	 * @expectedException Digilist\DependencyGraph\CircularDependencyException
-	 * @test
-	 */
-    public function testCircularDependencyException2()
+    /**
+     * Tests whether a circular dependency is detected for a->b b->a.
+     */
+    public function testCircularDependencyException2(): void
     {
         $graph = new DependencyGraph();
 
@@ -202,17 +192,16 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
 
         $graph->addDependency($nodeA, $nodeB);
         $graph->addDependency($nodeB, $nodeA);
-        $graph->resolve();
 
+        static::expectException(CircularDependencyException::class);
+
+        $graph->resolve();
     }
 
     /**
      * Tests whether a circular dependency is detected for a->b b->a c->d.
-     *
-     * @expectedException Digilist\DependencyGraph\CircularDependencyException
-     * @test
      */
-    public function testCircularDependencyException3()
+    public function testCircularDependencyException3(): void
     {
         $graph = new DependencyGraph();
 
@@ -225,9 +214,8 @@ class DependencyGraphTest extends \PHPUnit_Framework_TestCase
         $graph->addDependency($nodeB, $nodeA);
         $graph->addDependency($nodeC, $nodeD);
 
+        static::expectException(CircularDependencyException::class);
+
         $graph->resolve();
-
     }
-
-
 }
