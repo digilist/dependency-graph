@@ -4,7 +4,7 @@
 This library provides a simple [Dependency Graph](http://en.wikipedia.org/wiki/Dependency_graph) resolver. It supports multiple root nodes which are detected automatically.
 
 ## Installation
-You can install this library with Composer by requiring `digilist/php-dependency-graph`
+You can install this library with Composer by requiring `digilist/dependency-graph`
 
 ## Example Usage:
 There are two ways to define dependencies. One way is to define the dependencies directly on the node by calling the `dependsOn` method. By using this method you have to add the nodes manually to the graph (or at least the root nodes).
