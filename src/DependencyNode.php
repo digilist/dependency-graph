@@ -9,7 +9,7 @@ namespace Digilist\DependencyGraph;
 class DependencyNode
 {
     /**
-     * @var array<DependencyNode<T>>
+     * @var list<DependencyNode<T>>
      */
     private array $dependencies = [];
 
@@ -36,7 +36,7 @@ class DependencyNode
     }
 
     /**
-     * @return DependencyNode<T>[]
+     * @return list<DependencyNode<T>>
      */
     public function getDependencies(): array
     {
