@@ -106,7 +106,7 @@ class DependencyGraph
     /**
      * Resolve this dependency graph. In the end a valid path will be returned.
      *
-     * @return Node[]
+     * @return list<T>
      */
     public function resolve(): array
     {
