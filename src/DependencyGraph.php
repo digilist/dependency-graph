@@ -16,14 +16,14 @@ use SplObjectStorage;
 class DependencyGraph
 {
     /**
-     * @var Node[]
+     * @var list<Node>
      */
-    private $nodes = [];
+    private array $nodes = [];
 
     /**
      * @var DependencyObjectStorage
      */
-    private $dependencies;
+    private \SplObjectStorage $dependencies;
 
     public function __construct()
     {
@@ -41,8 +41,8 @@ class DependencyGraph
             $this->dependencies->attach($node, new \ArrayObject());
             $this->nodes[] = $node;
 
-            foreach ($node->getDependencies() as $depency) {
-                $this->addDependency($node, $depency);
+            foreach ($node->getDependencies() as $dependency) {
+                $this->addDependency($node, $dependency);
             }
         }
     }
@@ -73,7 +73,7 @@ class DependencyGraph
     /**
      * Find all connected graphs in the set of all graphs.
      *
-     * @return Node[]
+     * @return list<Node>
      */
     public function findRootNodes(): array
     {
@@ -85,8 +85,7 @@ class DependencyGraph
 
         // Detect all nodes which couldn't be root
         foreach ($this->dependencies as $node) {
-            $nodeDependencies = $this->dependencies[$node];
-            foreach ($nodeDependencies as $dependency) {
+            foreach ($this->dependencies[$node] as $dependency) {
                 $possibleRoots[$dependency] = false;
             }
         }
@@ -107,6 +106,8 @@ class DependencyGraph
      * Resolve this dependency graph. In the end a valid path will be returned.
      *
      * @return list<T>
+     *
+     * @throws CircularDependencyException
      */
     public function resolve(): array
     {
@@ -124,7 +125,7 @@ class DependencyGraph
             throw new CircularDependencyException();
         }
 
-        return array_map(fn(DependencyNode $node) => $node->getElement(), $resolved->getArrayCopy());
+        return array_map(static fn(DependencyNode $node) => $node->getElement(), $resolved->getArrayCopy());
     }
 
     /**
@@ -136,7 +137,7 @@ class DependencyGraph
     }
 
     /**
-     * @return Node[]
+     * @return list<Node>
      */
     public function getNodes(): array
     {
@@ -149,6 +150,8 @@ class DependencyGraph
      * @param Node             $rootNode
      * @param DependencyObject $resolved
      * @param DependencyObject $seen
+     *
+     * @throws CircularDependencyException
      */
     private function innerResolve(DependencyNode $rootNode, \ArrayObject $resolved, \ArrayObject $seen): void
     {

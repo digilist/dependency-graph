@@ -98,8 +98,7 @@ class DependencyGraphTest extends TestCase
      */
     public function testResolvingWithoutNodes(): void
     {
-        $graph = new DependencyGraph();
-        $resolved = $graph->resolve();
+        $resolved = (new DependencyGraph())->resolve();
         $this->assertEquals([], $resolved);
     }
 
@@ -175,13 +174,13 @@ class DependencyGraphTest extends TestCase
         $graph->addDependency($nodeC, $nodeE);
         $graph->addDependency($nodeD, $nodeB);
 
-        static::expectException(CircularDependencyException::class);
+        $this->expectException(CircularDependencyException::class);
 
         $graph->resolve();
     }
 
     /**
-     * Tests whether a circular dependency is detected for a->b b->a.
+     * Tests whether a circular dependency is detected for "a->b" "b->a".
      */
     public function testCircularDependencyException2(): void
     {
@@ -193,7 +192,7 @@ class DependencyGraphTest extends TestCase
         $graph->addDependency($nodeA, $nodeB);
         $graph->addDependency($nodeB, $nodeA);
 
-        static::expectException(CircularDependencyException::class);
+        $this->expectException(CircularDependencyException::class);
 
         $graph->resolve();
     }
@@ -214,7 +213,7 @@ class DependencyGraphTest extends TestCase
         $graph->addDependency($nodeB, $nodeA);
         $graph->addDependency($nodeC, $nodeD);
 
-        static::expectException(CircularDependencyException::class);
+        $this->expectException(CircularDependencyException::class);
 
         $graph->resolve();
     }
