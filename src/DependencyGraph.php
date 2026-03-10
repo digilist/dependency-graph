@@ -37,8 +37,8 @@ class DependencyGraph
      */
     public function addNode(DependencyNode $node): void
     {
-        if (!$this->dependencies->contains($node)) {
-            $this->dependencies->attach($node, new \ArrayObject());
+        if (!isset($this->dependencies[$node])) {
+            $this->dependencies[$node] = new \ArrayObject();
             $this->nodes[] = $node;
 
             foreach ($node->getDependencies() as $dependency) {
@@ -56,10 +56,10 @@ class DependencyGraph
      */
     public function addDependency(DependencyNode $node, DependencyNode $dependsOn): void
     {
-        if (!$this->dependencies->contains($node)) {
+        if (!isset($this->dependencies[$node])) {
             $this->addNode($node);
         }
-        if (!$this->dependencies->contains($dependsOn)) {
+        if (!isset($this->dependencies[$dependsOn])) {
             $this->addNode($dependsOn);
         }
 
